@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Gracia's VR · Gestión completa</title>
+    <link rel="icon" href="https://i.imgur.com/5ZLrhU5.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --bg-dark: #0f2027;
+            --bg-medium: #203a43;
+            --neon-cyan: #00f2ff;
+            --neon-blue: #0072ff;
+            --glass: rgba(255,255,255,0.03);
+            --glass-light: rgba(255,255,255,0.1);
+            --border: rgba(255,255,255,0.1);
+            --card-bg: rgba(255,255,255,0.05);
+            --text-primary: #fff;
+            --text-secondary: rgba(255,255,255,0.7);
+            --toast-success: #00f2ff;
+            --toast-error: #ff4d4d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-medium));
+            color: var(--text-primary);
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, var(--neon-cyan), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--neon-cyan);
+            border-left: 5px solid var(--neon-cyan);
+            padding-left: 1rem;
+            margin: 2rem 0 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            margin-bottom: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,242,255,0.2);
+            border-color: var(--neon-cyan);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--neon-cyan);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card h4 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        button, .btn {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-blue));
+            color: #0f2027;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            padding: 0.7rem 1.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover, .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-outline:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .filters input, .filters select {
+            background: var(--glass-light);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.7rem 1.5rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: 0.3s;
+            flex: 1 1 200px;
+        }
+
+        .filters input:focus, .filters select:focus {
+            border-color: var(--neon-cyan);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+        }
+
+        th {
+            background: rgba(0,242,255,0.15);
+            color: var(--neon-cyan);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: rgba(0,242,255,0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(0,255,0,0.2);
+            color: #a3ffa3;
+        }
+
+        .badge-warning {
+            background: rgba(255,255,0,0.2);
+            color: #ffffa3;
+        }
+
+        .badge-danger {
+            background: rgba(255,0,0,0.2);
+            color: #ffa3a3;
+        }
+
+        .badge-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        .badge-gold {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
+        }
+
+        .badge-silver {
+            background: rgba(192,192,192,0.2);
+            color: #c0c0c0;
+        }
+
+        .badge-bronze {
+            background: rgba(205,127,50,0.2);
+            color: #cd7f32;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            padding: 0.3rem;
+            box-shadow: none;
+        }
+
+        .icon-btn:hover {
+            color: var(--neon-cyan);
+            transform: scale(1.1);
+            background: none;
+        }
+
+        .icon-btn.delete:hover {
+            color: #ff4d4d;
+        }
+
+        .icon-btn.email:hover {
+            color: #00f2ff;
+        }
+
+        .icon-btn.gift:hover {
+            color: #ffd700;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-medium);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: white;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .template-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .template-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: none;
+        }
+
+        .template-btn.active {
+            background: var(--neon-cyan);
+            color: #0f2027;
+            border-color: var(--neon-cyan);
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .reward-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .reward-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-3px);
+        }
+
+        .reward-card.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.8);
+        }
+
+        .reward-card i {
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .reward-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .reward-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            max-width: 350px;
+        }
+
+        .toast {
+            background: rgba(15,32,39,0.95);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid var(--toast-success);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.3s forwards, fadeOut 0.3s 2.7s forwards;
+        }
+
+        .toast.error {
+            border-left-color: var(--toast-error);
+        }
+
+        .toast i {
+            font-size: 1.5rem;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: none;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-blue));
+            color: #0f2027;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-crown"></i> Panel de Administración · Gracia's VR</h1>
+
+        <!-- Pestañas -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="reservas"><i class="fas fa-calendar-check"></i> Reservas</button>
+            <button class="tab-btn" data-tab="descuentos"><i class="fas fa-tags"></i> Descuentos</button>
+            <button class="tab-btn" data-tab="fidelizacion"><i class="fas fa-star"></i> Fidelización</button>
+            <button class="tab-btn" data-tab="estadisticas"><i class="fas fa-chart-line"></i> Estadísticas</button>
+        </div>
+
+        <!-- Pestaña: Reservas -->
+        <div id="tab-reservas" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-calendar-alt"></i> Gestión de Reservas</h2>
+                <div class="filters">
+                    <input type="text" id="searchReservas" placeholder="🔍 Buscar nombre o email...">
+                    <select id="filterPlan">
+                        <option value="">Todos los planes</option>
+                        <option value="Explorador">Explorador</option>
+                        <option value="Veterano">Veterano</option>
+                        <option value="Fin de semana">Fin de semana</option>
+                        <option value="Grupal">Grupal</option>
+                    </select>
+                    <input type="date" id="filterDate">
+                    <button id="clearReservaFilters" class="btn-outline btn-sm"><i class="fas fa-times"></i> Limpiar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Plan</th>
+                                <th>Fecha</th>
+                                <th>ID Pedido</th>
+                                <th>Código generado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservasBody"></tbody>
+                    </table>
+                </div>
+                <p id="noReservas" style="text-align:center; color:var(--text-secondary); margin-top:1rem; display:none;">No hay reservas que coincidan.</p>
+            </div>
+        </div>
+
+        <!-- Pestaña: Descuentos -->
+        <div id="tab-descuentos" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-tags"></i> Gestión de Códigos de Descuento</h2>
+                <div class="stats-grid" id="discountStats">
+                    <div class="stat-card">
+                        <i class="fas fa-ticket"></i>
+                        <h4 id="totalCodes">0</h4>
+                        <p>Total códigos</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h4 id="activeCodes">0</h4>
+                        <p>Activos no usados</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h4 id="expiredCodes">0</h4>
+                        <p>Expirados</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-double"></i>
+                        <h4 id="usedCodes">0</h4>
+                        <p>Usados</p>
+                    </div>
+                </div>
+                <button id="newCodeBtn" style="margin-bottom:1.5rem;"><i class="fas fa-plus"></i> Nuevo código</button>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Email</th>
+                                <th>%</th>
+                                <th>Generado</th>
+                                <th>Expira</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña: Fidelización -->
+        <div id="tab-fidelizacion" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-star"></i> Programa de Fidelización</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h4 id="totalClientes">0</h4>
+                        <p>Clientes registrados</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-crown"></i>
+                        <h4 id="nivelBronce">0</h4>
+                        <p>Bronce (1-2 res.)</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-crown" style="color:#c0c0c0;"></i>
+                        <h4 id="nivelPlata">0</h4>
+                        <p>Plata (3-4 res.)</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-crown" style="color:#ffd700;"></i>
+                        <h4 id="nivelOro">0</h4>
+                        <p>Oro (5+ res.)</p>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Nombre</th>
+                                <th>Reservas</th>
+                                <th>Puntos</th>
+                                <th>Nivel</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loyaltyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña: Estadísticas -->
+        <div id="tab-estadisticas" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Estadísticas Generales</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <h4 id="statTotalReservas">0</h4>
+                        <p>Reservas totales</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-euro-sign"></i>
+                        <h4 id="statIngresos">0€</h4>
+                        <p>Ingresos estimados</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-tags"></i>
+                        <h4 id="statCodigosUsados">0</h4>
+                        <p>Códigos usados</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h4 id="statClientesUnicos">0</h4>
+                        <p>Clientes únicos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para crear/editar código de descuento -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--neon-cyan); margin-bottom: 1.5rem;"><i class="fas fa-edit"></i> <span id="modalTitle">Nuevo código</span></h3>
+            <form id="codeForm">
+                <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input type="text" id="codigo" placeholder="GRACIAS-XXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailCode">Email asociado (opcional)</label>
+                    <input type="email" id="emailCode" placeholder="cliente@ejemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="descuento">% Descuento (máx 50%)</label>
+                    <input type="number" id="descuento" min="1" max="50" value="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="expira">Fecha de expiración</label>
+                    <input type="date" id="expira" required>
+                </div>
+                <div class="form-group">
+                    <label for="activo">Activo</label>
+                    <select id="activo">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn-outline" id="cancelModalBtn">Cancelar</button>
+                    <button type="submit" class="btn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para envío de correo (solo con dos plantillas: confirmación y feedback) -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--neon-cyan); margin-bottom: 1.5rem;"><i class="fas fa-paper-plane"></i> Enviar correo</h3>
+            <div class="template-selector">
+                <button class="template-btn active" data-template="confirmacion">Confirmación de reserva</button>
+                <button class="template-btn" data-template="feedback">Post-reserva (encuesta)</button>
+            </div>
+            <form id="emailSendForm">
+                <div class="form-group">
+                    <label for="emailTo">Para</label>
+                    <input type="email" id="emailTo" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="emailSubject">Asunto</label>
+                    <input type="text" id="emailSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailMessage">Mensaje</label>
+                    <textarea id="emailMessage" rows="5" required></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn-outline" id="cancelEmailBtn">Cancelar</button>
+                    <button type="submit" class="btn">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para canje de puntos de fidelización (NUEVO) -->
+    <div id="redeemModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--neon-cyan); margin-bottom: 1rem;"><i class="fas fa-gift"></i> Canjear puntos</h3>
+            <div id="redeemClientInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: var(--glass); border-radius: 10px;">
+                <p><strong>Cliente:</strong> <span id="redeemClientName"></span></p>
+                <p><strong>Email:</strong> <span id="redeemClientEmail"></span></p>
+                <p><strong>Puntos disponibles:</strong> <span id="redeemClientPoints">0</span></p>
+            </div>
+            <div class="rewards-grid" id="rewardsContainer">
+                <!-- Se generará con JS -->
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button type="button" class="btn-outline" id="cancelRedeemBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Inicializar EmailJS con la misma clave pública que en index.html
+        emailjs.init("Vwmc9kXqjL8oOk8G4"); // Reemplázala si es necesario
+
+        // ========== TOAST ==========
+        function showToast(msg, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (isError) toast.style.borderLeftColor = '#ff4d4d';
+            toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ========== CARGA DE DATOS DESDE LOCALSTORAGE ==========
+        let reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+        let discountCodes = JSON.parse(localStorage.getItem('discountCodes')) || [];
+
+        // ========== FUNCIONES COMUNES ==========
+        function saveDiscountCodes() {
+            localStorage.setItem('discountCodes', JSON.stringify(discountCodes));
+        }
+
+        // ========== PESTAÑAS ==========
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                if (tab.dataset.tab === 'reservas') renderReservas();
+                if (tab.dataset.tab === 'descuentos') renderDiscountTable();
+                if (tab.dataset.tab === 'fidelizacion') renderLoyalty();
+                if (tab.dataset.tab === 'estadisticas') renderStats();
+            });
+        });
+
+        // ========== RESERVAS ==========
+        const reservasBody = document.getElementById('reservasBody');
+        const searchReservas = document.getElementById('searchReservas');
+        const filterPlan = document.getElementById('filterPlan');
+        const filterDate = document.getElementById('filterDate');
+        const clearReservaFilters = document.getElementById('clearReservaFilters');
+
+        function renderReservas() {
+            const searchTerm = searchReservas.value.toLowerCase();
+            const selectedPlan = filterPlan.value;
+            const selectedDate = filterDate.value;
+
+            const filtradas = reservas.filter(r => {
+                const nombre = (r.from_name || '').toLowerCase();
+                const email = (r.from_email || '').toLowerCase();
+                const tipo = (r.tipo || '');
+                const fecha = (r.fecha || '');
+                return (!searchTerm || nombre.includes(searchTerm) || email.includes(searchTerm)) &&
+                       (!selectedPlan || tipo.includes(selectedPlan)) &&
+                       (!selectedDate || fecha === selectedDate);
+            });
+
+            reservasBody.innerHTML = '';
+            if (filtradas.length === 0) {
+                document.getElementById('noReservas').style.display = 'block';
+            } else {
+                document.getElementById('noReservas').style.display = 'none';
+                filtradas.forEach((r, index) => {
+                    const originalIndex = reservas.findIndex(res => res.order_id === r.order_id);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${r.from_name || ''}</td>
+                        <td>${r.from_email || ''}</td>
+                        <td>${r.phone || ''}</td>
+                        <td>${r.tipo || ''}</td>
+                        <td>${r.fecha || ''}</td>
+                        <td>${r.order_id || ''}</td>
+                        <td>${r.codigo_generado || ''}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-btn email" onclick="openEmailModal(${originalIndex})" title="Enviar correo"><i class="fas fa-envelope"></i></button>
+                                <button class="icon-btn delete" onclick="deleteReserva(${originalIndex})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    reservasBody.appendChild(tr);
+                });
+            }
+        }
+
+        window.deleteReserva = function(index) {
+            if (confirm('¿Eliminar esta reserva permanentemente?')) {
+                reservas.splice(index, 1);
+                localStorage.setItem('reservas', JSON.stringify(reservas));
+                renderReservas();
+                showToast('Reserva eliminada');
+            }
+        };
+
+        searchReservas.addEventListener('input', renderReservas);
+        filterPlan.addEventListener('change', renderReservas);
+        filterDate.addEventListener('change', renderReservas);
+        clearReservaFilters.addEventListener('click', () => {
+            searchReservas.value = '';
+            filterPlan.value = '';
+            filterDate.value = '';
+            renderReservas();
+        });
+
+        // ========== DESCUENTOS ==========
+        const codesBody = document.getElementById('codesTableBody');
+
+        function renderDiscountTable() {
+            codesBody.innerHTML = '';
+            discountCodes.forEach((code, index) => {
+                const generado = new Date(code.generado).toLocaleDateString('es-ES');
+                const expira = new Date(code.expira).toLocaleDateString('es-ES');
+                const ahora = new Date();
+                const expirado = new Date(code.expira) < ahora;
+                let estadoClase = 'badge-success';
+                let estadoTexto = 'Activo';
+                if (code.usado) {
+                    estadoClase = 'badge-secondary';
+                    estadoTexto = 'Usado';
+                } else if (!code.activo) {
+                    estadoClase = 'badge-warning';
+                    estadoTexto = 'Inactivo';
+                } else if (expirado) {
+                    estadoClase = 'badge-danger';
+                    estadoTexto = 'Expirado';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${code.codigo}</strong></td>
+                    <td>${code.email || '-'}</td>
+                    <td>${code.descuento}%</td>
+                    <td>${generado}</td>
+                    <td>${expira}</td>
+                    <td><span class="badge ${estadoClase}">${estadoTexto}</span></td>
+                    <td>
+                        <button class="icon-btn" onclick="toggleCodeActive(${index})" title="Activar/Desactivar"><i class="fas fa-power-off"></i></button>
+                        <button class="icon-btn delete" onclick="deleteCode(${index})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                codesBody.appendChild(tr);
+            });
+            updateDiscountStats();
+        }
+
+        window.toggleCodeActive = function(index) {
+            discountCodes[index].activo = !discountCodes[index].activo;
+            saveDiscountCodes();
+            renderDiscountTable();
+            showToast(`Código ${discountCodes[index].activo ? 'activado' : 'desactivado'}`);
+        };
+
+        window.deleteCode = function(index) {
+            if (confirm('¿Eliminar este código permanentemente?')) {
+                discountCodes.splice(index, 1);
+                saveDiscountCodes();
+                renderDiscountTable();
+                showToast('Código eliminado');
+            }
+        };
+
+        function updateDiscountStats() {
+            const total = discountCodes.length;
+            const ahora = new Date();
+            const activosNoUsados = discountCodes.filter(c => c.activo && !c.usado && new Date(c.expira) >= ahora).length;
+            const expirados = discountCodes.filter(c => new Date(c.expira) < ahora).length;
+            const usados = discountCodes.filter(c => c.usado).length;
+            document.getElementById('totalCodes').textContent = total;
+            document.getElementById('activeCodes').textContent = activosNoUsados;
+            document.getElementById('expiredCodes').textContent = expirados;
+            document.getElementById('usedCodes').textContent = usados;
+        }
+
+        // ========== MODAL DE CÓDIGOS ==========
+        const codeModal = document.getElementById('codeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const codeForm = document.getElementById('codeForm');
+        const codigoInput = document.getElementById('codigo');
+        const emailCodeInput = document.getElementById('emailCode');
+        const descuentoInput = document.getElementById('descuento');
+        const expiraInput = document.getElementById('expira');
+        const activoSelect = document.getElementById('activo');
+        let editIndex = -1;
+
+        document.getElementById('newCodeBtn').addEventListener('click', () => {
+            editIndex = -1;
+            modalTitle.textContent = 'Nuevo código';
+            codigoInput.value = 'GRACIAS-' + Math.random().toString(36).substring(2,8).toUpperCase();
+            emailCodeInput.value = '';
+            descuentoInput.value = '10';
+            const defaultExpira = new Date();
+            defaultExpira.setMonth(defaultExpira.getMonth() + 3);
+            expiraInput.value = defaultExpira.toISOString().split('T')[0];
+            activoSelect.value = 'true';
+            codeModal.style.display = 'flex';
+        });
+
+        document.getElementById('cancelModalBtn').addEventListener('click', () => {
+            codeModal.style.display = 'none';
+        });
+
+        window.onclick = (e) => {
+            if (e.target === codeModal) codeModal.style.display = 'none';
+            if (e.target === emailModal) emailModal.style.display = 'none';
+            if (e.target === redeemModal) redeemModal.style.display = 'none';
+        };
+
+        codeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newCode = {
+                codigo: codigoInput.value.trim().toUpperCase(),
+                descuento: parseInt(descuentoInput.value),
+                email: emailCodeInput.value.trim() || null,
+                generado: new Date().toISOString(),
+                expira: new Date(expiraInput.value).toISOString(),
+                usado: false,
+                activo: activoSelect.value === 'true'
+            };
+            if (editIndex === -1) {
+                if (discountCodes.some(c => c.codigo === newCode.codigo)) {
+                    showToast('Ya existe ese código', true);
+                    return;
+                }
+                discountCodes.push(newCode);
+                showToast('Código creado');
+            } else {
+                discountCodes[editIndex] = newCode;
+                showToast('Código actualizado');
+            }
+            saveDiscountCodes();
+            renderDiscountTable();
+            codeModal.style.display = 'none';
+        });
+
+        // ========== FIDELIZACIÓN ==========
+        function getLoyaltyData() {
+            const clientes = {};
+            reservas.forEach(r => {
+                const email = r.from_email;
+                if (!email) return;
+                if (!clientes[email]) {
+                    clientes[email] = {
+                        email,
+                        nombre: r.from_name || '',
+                        reservas: 0,
+                        puntos: 0,
+                        nivel: 'Bronce',
+                        // Historial de canjes (opcional)
+                        canjes: []
+                    };
+                }
+                clientes[email].reservas++;
+                // Cada 30 min = 1 punto (Explorador/Fin de semana); 60 min = 2 puntos (Veterano/Grupal)
+                if (r.tipo && (r.tipo.includes('Veterano') || r.tipo.includes('Grupal'))) {
+                    clientes[email].puntos += 2;
+                } else {
+                    clientes[email].puntos += 1;
+                }
+            });
+            // Añadir puntos canjeados (se podrían restar si hubiera historial)
+            // Por ahora no restamos; en el canje se restarán y guardaremos en el cliente.
+            // Para simplificar, cargamos puntos guardados en el propio cliente (si existen)
+            // Pero como no guardamos historial, solo calculamos sobre reservas.
+            // Si queremos persistir canjes, necesitamos un campo "puntos_canjeados" en el cliente.
+            // Vamos a añadir un campo "puntos_gastados" en cada cliente, que se guardará en localStorage aparte.
+            // Para ello, creamos un objeto "clientesData" en localStorage.
+            let clientesData = JSON.parse(localStorage.getItem('clientes_fidelizacion')) || {};
+            Object.values(clientes).forEach(c => {
+                if (clientesData[c.email]) {
+                    c.puntos_gastados = clientesData[c.email].puntos_gastados || 0;
+                } else {
+                    c.puntos_gastados = 0;
+                }
+                // Los puntos reales son los acumulados por reservas menos los gastados
+                c.puntos_reales = c.puntos - (c.puntos_gastados || 0);
+                // Nivel basado en reservas (no en puntos reales)
+                if (c.reservas >= 5) c.nivel = 'Oro';
+                else if (c.reservas >= 3) c.nivel = 'Plata';
+                else c.nivel = 'Bronce';
+            });
+            return clientes;
+        }
+
+        function saveClientesData(clientes) {
+            let clientesData = {};
+            Object.values(clientes).forEach(c => {
+                clientesData[c.email] = {
+                    puntos_gastados: c.puntos_gastados || 0
+                };
+            });
+            localStorage.setItem('clientes_fidelizacion', JSON.stringify(clientesData));
+        }
+
+        function renderLoyalty() {
+            const clientes = getLoyaltyData();
+            const tbody = document.getElementById('loyaltyBody');
+            tbody.innerHTML = '';
+            Object.values(clientes).forEach(c => {
+                const tr = document.createElement('tr');
+                let badgeClass = 'badge-bronze';
+                if (c.nivel === 'Plata') badgeClass = 'badge-silver';
+                else if (c.nivel === 'Oro') badgeClass = 'badge-gold';
+                tr.innerHTML = `
+                    <td>${c.email}</td>
+                    <td>${c.nombre}</td>
+                    <td>${c.reservas}</td>
+                    <td>${c.puntos_reales}</td>
+                    <td><span class="badge ${badgeClass}">${c.nivel}</span></td>
+                    <td>
+                        <button class="icon-btn gift" onclick="openRedeemModal('${c.email}')" title="Canjear puntos"><i class="fas fa-gift"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('totalClientes').textContent = Object.keys(clientes).length;
+            document.getElementById('nivelBronce').textContent = Object.values(clientes).filter(c => c.nivel === 'Bronce').length;
+            document.getElementById('nivelPlata').textContent = Object.values(clientes).filter(c => c.nivel === 'Plata').length;
+            document.getElementById('nivelOro').textContent = Object.values(clientes).filter(c => c.nivel === 'Oro').length;
+        }
+
+        // ========== MODAL DE CANJE (NUEVO) ==========
+        const redeemModal = document.getElementById('redeemModal');
+        const redeemClientName = document.getElementById('redeemClientName');
+        const redeemClientEmail = document.getElementById('redeemClientEmail');
+        const redeemClientPoints = document.getElementById('redeemClientPoints');
+        const rewardsContainer = document.getElementById('rewardsContainer');
+        const cancelRedeemBtn = document.getElementById('cancelRedeemBtn');
+
+        let currentRedeemEmail = '';
+
+        // Definir recompensas disponibles
+        const rewards = [
+            { id: 1, nombre: '10% descuento', puntos: 5, descuento: 10, icono: 'fa-tag' },
+            { id: 2, nombre: '20% descuento', puntos: 9, descuento: 20, icono: 'fa-tag' },
+            { id: 3, nombre: 'Camiseta Gracia\'s VR', puntos: 15, descuento: 0, icono: 'fa-tshirt' },
+            { id: 4, nombre: 'Sesión extra gratis (30 min)', puntos: 20, descuento: 0, icono: 'fa-clock' }
+        ];
+
+        function openRedeemModal(email) {
+            const clientes = getLoyaltyData();
+            const cliente = clientes[email];
+            if (!cliente) return;
+
+            currentRedeemEmail = email;
+            redeemClientName.textContent = cliente.nombre || 'Desconocido';
+            redeemClientEmail.textContent = email;
+            redeemClientPoints.textContent = cliente.puntos_reales;
+
+            // Generar tarjetas de recompensas
+            rewardsContainer.innerHTML = '';
+            rewards.forEach(r => {
+                const card = document.createElement('div');
+                card.className = `reward-card ${cliente.puntos_reales < r.puntos ? 'disabled' : ''}`;
+                card.innerHTML = `
+                    <i class="fas ${r.icono}"></i>
+                    <h4>${r.nombre}</h4>
+                    <p>${r.puntos} puntos</p>
+                `;
+                card.addEventListener('click', () => {
+                    if (cliente.puntos_reales >= r.puntos) {
+                        redeemReward(email, r);
+                    }
+                });
+                rewardsContainer.appendChild(card);
+            });
+
+            redeemModal.style.display = 'flex';
+        }
+
+        function redeemReward(email, reward) {
+            if (!confirm(`¿Confirmas que ${email} canjea ${reward.puntos} puntos por ${reward.nombre}?`)) return;
+
+            // Obtener datos actualizados
+            let clientes = getLoyaltyData();
+            let cliente = clientes[email];
+            if (!cliente) return;
+
+            // Restar puntos
+            cliente.puntos_gastados = (cliente.puntos_gastados || 0) + reward.puntos;
+            cliente.puntos_reales = cliente.puntos - cliente.puntos_gastados;
+
+            // Guardar en clientesData
+            let clientesData = JSON.parse(localStorage.getItem('clientes_fidelizacion')) || {};
+            clientesData[email] = { puntos_gastados: cliente.puntos_gastados };
+            localStorage.setItem('clientes_fidelizacion', JSON.stringify(clientesData));
+
+            // Si la recompensa incluye descuento, generar un código de descuento
+            if (reward.descuento > 0) {
+                const nuevoCodigo = {
+                    codigo: 'CANJE-' + Math.random().toString(36).substring(2,8).toUpperCase(),
+                    descuento: reward.descuento,
+                    email: email,
+                    generado: new Date().toISOString(),
+                    expira: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+                    usado: false,
+                    activo: true
+                };
+                discountCodes.push(nuevoCodigo);
+                saveDiscountCodes();
+                showToast(`Código ${nuevoCodigo.codigo} generado con ${reward.descuento}% de descuento.`);
+            } else {
+                showToast(`Recompensa "${reward.nombre}" canjeada correctamente.`);
+            }
+
+            // Actualizar vistas
+            renderLoyalty();
+            renderDiscountTable();
+            redeemModal.style.display = 'none';
+        }
+
+        cancelRedeemBtn.addEventListener('click', () => {
+            redeemModal.style.display = 'none';
+        });
+
+        // ========== ESTADÍSTICAS ==========
+        function renderStats() {
+            const totalReservas = reservas.length;
+            const ingresos = reservas.reduce((acc, r) => {
+                if (r.tipo?.includes('20€')) return acc + 20;
+                if (r.tipo?.includes('30€')) return acc + 30;
+                if (r.tipo?.includes('15€')) return acc + 15;
+                if (r.tipo?.includes('120€')) return acc + 120;
+                return acc;
+            }, 0);
+            const codigosUsados = discountCodes.filter(c => c.usado).length;
+            const clientesUnicos = new Set(reservas.map(r => r.from_email)).size;
+            document.getElementById('statTotalReservas').textContent = totalReservas;
+            document.getElementById('statIngresos').textContent = ingresos + '€';
+            document.getElementById('statCodigosUsados').textContent = codigosUsados;
+            document.getElementById('statClientesUnicos').textContent = clientesUnicos;
+        }
+
+        // ========== MODAL DE CORREO CON DOS PLANTILLAS ==========
+        const emailModal = document.getElementById('emailModal');
+        const emailTo = document.getElementById('emailTo');
+        const emailSubject = document.getElementById('emailSubject');
+        const emailMessage = document.getElementById('emailMessage');
+        const emailSendForm = document.getElementById('emailSendForm');
+        const templateBtns = document.querySelectorAll('.template-btn');
+        let currentReservaIndex = -1;
+        let currentTemplate = 'confirmacion'; // por defecto
+
+        templateBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                templateBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTemplate = btn.dataset.template;
+                if (currentReservaIndex !== -1) {
+                    loadTemplateForReserva(currentReservaIndex, currentTemplate);
+                }
+            });
+        });
+
+        function loadTemplateForReserva(index, template) {
+            const reserva = reservas[index];
+            if (!reserva) return;
+
+            if (template === 'confirmacion') {
+                emailSubject.value = 'Confirmación de reserva - Gracia\'s VR';
+                emailMessage.value = `Hola ${reserva.from_name},\n\nTu reserva para el día ${reserva.fecha} (plan ${reserva.tipo}) ha sido confirmada.\n\nID de pedido: ${reserva.order_id}\nCódigo de descuento generado: ${reserva.codigo_generado || 'Ninguno'}\n\n¡Te esperamos!\nGracia's VR`;
+            } else if (template === 'feedback') {
+                emailSubject.value = `${reserva.from_name}, cuéntanos qué tal tu experiencia en Gracia's VR`;
+                emailMessage.value = `Hola ${reserva.from_name},\n\nEsperamos que hayas disfrutado de tu sesión de realidad virtual el día ${reserva.fecha} (plan ${reserva.tipo}).\n\nNos encantaría conocer tu opinión. ¿Cómo valoras tu experiencia? Puedes responder directamente a este correo o puntuarnos en nuestra web.\n\nGracias por confiar en nosotros,\nGracia's VR`;
+            }
+        }
+
+        window.openEmailModal = function(index) {
+            currentReservaIndex = index;
+            const reserva = reservas[index];
+            emailTo.value = reserva.from_email || '';
+            // Cargar la plantilla activa actual
+            const activeTemplate = document.querySelector('.template-btn.active').dataset.template;
+            loadTemplateForReserva(index, activeTemplate);
+            emailModal.style.display = 'flex';
+        };
+
+        document.getElementById('cancelEmailBtn').addEventListener('click', () => {
+            emailModal.style.display = 'none';
+        });
+
+        emailSendForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (currentReservaIndex === -1) return;
+
+            const reserva = reservas[currentReservaIndex];
+            const templateParams = {
+                from_name: reserva.from_name,
+                to_email: reserva.from_email,
+                from_email: reserva.from_email, // para algunas plantillas
+                subject: emailSubject.value,
+                message: emailMessage.value,
+                fecha: reserva.fecha,
+                tipo: reserva.tipo,
+                order_id: reserva.order_id,
+                codigo_descuento: reserva.codigo_generado || ''
+            };
+
+            // IDs de plantilla: ajusta según tus plantillas reales en EmailJS
+            let templateId = '';
+            if (currentTemplate === 'confirmacion') {
+                templateId = 'template_a7951yv'; // la que ya funciona
+            } else {
+                templateId = 'template_feedback'; // la que crearás para feedback
+            }
+
+            emailjs.send('service_5yvt4na', templateId, templateParams)
+                .then(() => {
+                    showToast('Correo enviado correctamente');
+                    emailModal.style.display = 'none';
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Error al enviar el correo', true);
+                });
+        });
+
+        // ========== SINCRONIZACIÓN ENTRE PESTAÑAS ==========
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'reservas') {
+                reservas = JSON.parse(e.newValue || '[]');
+                if (document.querySelector('.tab-btn.active').dataset.tab === 'reservas') renderReservas();
+                if (document.querySelector('.tab-btn.active').dataset.tab === 'fidelizacion') renderLoyalty();
+                if (document.querySelector('.tab-btn.active').dataset.tab === 'estadisticas') renderStats();
+            }
+            if (e.key === 'discountCodes') {
+                discountCodes = JSON.parse(e.newValue || '[]');
+                if (document.querySelector('.tab-btn.active').dataset.tab === 'descuentos') renderDiscountTable();
+                if (document.querySelector('.tab-btn.active').dataset.tab === 'estadisticas') renderStats();
+            }
+        });
+
+        // ==================== LIMPIAR URL DE PARÁMETROS ====================
+        (function() {
+            // Elimina cualquier query string o hash para una URL más limpia
+            if (window.location.search || window.location.hash) {
+                const nuevaUrl = window.location.pathname; // Mantiene la ruta actual
+                window.history.replaceState(null, '', nuevaUrl);
+                console.log('URL limpiada: ' + nuevaUrl);
+            }
+        })();
+
+        // ========== INICIAL ==========
+        renderReservas();
+        renderDiscountTable();
+        renderLoyalty();
+        renderStats();
+    </script>
+</body>
+</html>
