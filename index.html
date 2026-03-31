@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- METADATOS BÁSICOS actualizados con la información real del proyecto -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gracia's VR - Realidad virtual inmersiva en Malasaña. Vive experiencias únicas a precios asequibles. Reserva tu sesión ahora.">
+    <meta name="keywords" content="VR, realidad virtual, Madrid, Malasaña, experiencias inmersivas, juegos VR, reserva, ocio digital">
+    <meta name="author" content="Alejandro Guerra Abán, Brian Burgos Recuero, Israel Suárez García">
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="Gracia's VR - La Frontera Digital en Malasaña">
+    <meta property="og:description" content="Sumérgete en la realidad virtual más inmersiva de Madrid. Tarifas desde 20€. Promociones especiales entre semana y fines de semana.">
+    <meta property="og:image" content="https://i.imgur.com/EPR54ol.png">
+    <meta property="og:url" content="https://www.graciasvr.com">
+    <meta property="og:type" content="website">
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gracia's VR - La Frontera Digital en Malasaña">
+    <meta name="twitter:description" content="Realidad virtual en el corazón de Malasaña. Promociones exclusivas.">
+    <meta name="twitter:image" content="https://i.imgur.com/EPR54ol.png">
+    <!-- FAVICON -->
+    <link rel="icon" href="https://i.imgur.com/5ZLrhU5.png" type="image/png">
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- AOS (ANIMACIONES) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- FULLCALENDAR -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <title>Gracia's VR | La Frontera Digital · Malasaña</title>
+    <style>
+        /* ===== VARIABLES CSS ===== (se mantienen igual) */
+        :root {
+            --bg-primary: #0f2027;
+            --bg-secondary: #203a43;
+            --text-primary: #fff;
+            --text-secondary: rgba(255,255,255,0.7);
+            --neon-cyan: #00f2ff;
+            --neon-blue: #0072ff;
+            --glass: rgba(255,255,255,0.03);
+            --glass-light: rgba(255,255,255,0.1);
+            --border: rgba(255,255,255,0.1);
+            --card-bg: rgba(255,255,255,0.05);
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --toggle-sun: none;
+            --toggle-moon: block;
+            --toast-success: #00f2ff;
+            --toast-error: #ff4d4d;
+        }
+        body.light-theme {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #d9e2ec;
+            --text-primary: #102a43;
+            --text-secondary: #243b53;
+            --neon-cyan: #0e7c7c;
+            --neon-blue: #1d4f8b;
+            --glass: rgba(0,0,0,0.02);
+            --glass-light: rgba(0,0,0,0.05);
+            --border: rgba(0,0,0,0.1);
+            --card-bg: rgba(255,255,255,0.7);
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --toggle-sun: block;
+            --toggle-moon: none;
+        }
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+        /* ===== NAVEGACIÓN ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: padding 0.3s;
+        }
+        body:not(.light-theme) nav {
+            background: rgba(15,32,39,0.8);
+        }
+        body.light-theme nav {
+            background: rgba(240,244,248,0.8);
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        .theme-toggle .fa-sun { display: var(--toggle-sun); }
+        .theme-toggle .fa-moon { display: var(--toggle-moon); }
+        .nav-btn {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-blue));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+        /* ===== HERO CON PARTÍCULAS ===== */
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            background: linear-gradient(rgba(15,32,39,0.7), rgba(15,32,39,0.7)), url('https://i.imgur.com/EPR54ol.png') center/cover fixed;
+            overflow: hidden;
+        }
+        .hero .content {
+            position: relative;
+            z-index: 2;
+        }
+        .glitch {
+            font-size: clamp(3rem, 15vw, 8rem);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75), -0.025em -0.05em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 500ms infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 rgba(255,0,80,.75), -0.05em -0.025em 0 rgba(0,255,0,.75), -0.025em 0.05em 0 rgba(0,0,255,.75); }
+            14% { text-shadow: 0.05em 0 0 rgba(255,0,80,.75), -0.05em -0.025em 0 rgba(0,255,0,.75), -0.025em 0.05em 0 rgba(0,0,255,.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,80,.75), 0.025em 0.025em 0 rgba(0,255,0,.75), -0.05em -0.05em 0 rgba(0,0,255,.75); }
+            49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,80,.75), 0.025em 0.025em 0 rgba(0,255,0,.75), -0.05em -0.05em 0 rgba(0,0,255,.75); }
+            50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,80,.75), 0.05em 0 0 rgba(0,255,0,.75), 0 -0.05em 0 rgba(0,0,255,.75); }
+            99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,80,.75), 0.05em 0 0 rgba(0,255,0,.75), 0 -0.05em 0 rgba(0,0,255,.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(255,0,80,.75), -0.025em -0.025em 0 rgba(0,255,0,.75), -0.025em -0.05em 0 rgba(0,0,255,.75); }
+        }
+        .hero p {
+            max-width: 600px;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+        /* ===== BOTONES ===== */
+        .btn {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-blue));
+            color: #fff;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        .btn-outline:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+        /* ===== SECCIONES ===== */
+        section {
+            padding: 6rem 5%;
+            position: relative;
+        }
+        .section-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 4rem;
+            font-size: 1.2rem;
+        }
+        /* ===== TARJETAS DE PRECIOS (actualizadas con los precios reales) ===== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .price-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            border-radius: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .price-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 242, 255, 0.2);
+            border-color: var(--neon-cyan);
+        }
+        .price-card.featured {
+            border: 2px solid var(--neon-cyan);
+            background: rgba(0, 242, 255, 0.1);
+            transform: scale(1.02);
+        }
+        .price-card .badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--neon-cyan);
+            color: #000;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .price-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+        .price-card .amount {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+        .price-card .amount span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .price-card .features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        .price-card .features li {
+            margin: 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .price-card .features i {
+            color: var(--neon-cyan);
+            width: 20px;
+        }
+        /* ===== SECCIÓN DE PROMOCIONES ESPECIALES (nueva) ===== */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .promo-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .promo-card:hover {
+            border-color: var(--neon-cyan);
+        }
+        .promo-card i {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+        .promo-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .promo-card p {
+            color: var(--text-secondary);
+        }
+        /* ===== SECCIÓN DE FIDELIZACIÓN (tarjeta de 29 puntos) ===== */
+        .loyalty-card {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 30px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .loyalty-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        .loyalty-cell {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: 0.3s;
+        }
+        .loyalty-cell.filled {
+            background: var(--neon-cyan);
+            color: #000;
+            border-color: var(--neon-cyan);
+        }
+        .loyalty-rewards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .reward-badge {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        .reward-badge i {
+            color: var(--neon-cyan);
+            margin-right: 0.3rem;
+        }
+        /* ===== CARACTERÍSTICAS (actualizadas con los productos tangibles/intangibles) ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .feature-item {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .feature-item:hover {
+            border-color: var(--neon-cyan);
+        }
+        .feature-item i {
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        /* ===== TESTIMONIOS ===== */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+        .testimonial-card i.fa-quote-left {
+            color: var(--neon-cyan);
+            font-size: 2rem;
+            opacity: 0.3;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .testimonial-card p {
+            font-style: italic;
+            margin: 1rem 0;
+        }
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .testimonial-card .author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .testimonial-card .author h4 {
+            font-weight: 600;
+        }
+        .testimonial-card .author span {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+        }
+        /* ===== GALERÍA ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .gallery-item {
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+        }
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover img, .gallery-item:hover video {
+            transform: scale(1.1);
+        }
+        /* ===== CALENDARIO ===== */
+        #calendar {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        /* ===== FORMULARIO ===== */
+        .form-container {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--glass-light);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+        }
+        .discount-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .discount-input-group button {
+            white-space: nowrap;
+            padding: 0 1.5rem;
+            background: var(--glass-light);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .discount-input-group button:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        .discount-applied {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #priceDisplay {
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            background: rgba(0,242,255,0.1);
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid var(--neon-cyan);
+        }
+        #priceDisplay .original {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-right: 0.5rem;
+        }
+        #priceDisplay .final {
+            color: var(--neon-cyan);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        /* ===== MAPA (actualizado con dirección real) ===== */
+        .map-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        /* ===== FAQ ===== */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .faq-question {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+        .faq-answer {
+            padding: 0 1rem 1rem;
+            display: none;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        /* ===== CONTADOR ===== */
+        .countdown {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 2rem 0;
+        }
+        .countdown-item {
+            background: var(--glass);
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 80px;
+        }
+        .countdown-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        /* ===== MODO SIN IMÁGENES ===== */
+        body.light-mode-images .hero {
+            background: linear-gradient(rgba(15,32,39,0.7), rgba(15,32,39,0.7)), none;
+        }
+        body.light-mode-images img:not(.no-light-mode) {
+            display: none;
+        }
+        /* ===== FOOTER (actualizado con dirección real) ===== */
+        footer {
+            background: #0a161b;
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-col h4 {
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-col ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-col ul li a:hover {
+            color: var(--neon-cyan);
+        }
+        .socials {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .socials a {
+            color: #fff;
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
+        .socials a:hover {
+            color: var(--neon-cyan);
+            transform: translateY(-5px);
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        /* ===== TOAST NOTIFICATIONS (MODERNAS) ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            max-width: 350px;
+        }
+        .toast {
+            background: rgba(15,32,39,0.95);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid var(--toast-success);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(100%);
+            animation: slideIn 0.3s forwards, fadeOut 0.3s 2.7s forwards;
+            font-weight: 500;
+        }
+        .toast.error {
+            border-left-color: var(--toast-error);
+        }
+        .toast i {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+        }
+        .toast.error i {
+            color: var(--toast-error);
+        }
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVEGACIÓN -->
+    <nav>
+        <a href="#" class="logo">GRACIA'S VR</a>
+        <div class="nav-links">
+            <a href="#inicio">Inicio</a>
+            <a href="#planes">Planes</a>
+            <a href="#promociones">Promociones</a>
+            <a href="#fidelizacion">Fidelización</a>
+            <a href="#caracteristicas">Características</a>
+            <a href="#testimonios">Testimonios</a>
+            <a href="#galeria">Galería</a>
+            <a href="#reserva">Reserva</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="theme-toggle" id="lightModeToggle" aria-label="Modo ligero (sin imágenes)">
+                <i class="fas fa-eye-slash"></i>
+            </button>
+        </div>
+        <a href="#reserva" class="nav-btn">Reservar</a>
+    </nav>
+
+    <!-- HERO -->
+    <section id="inicio" class="hero">
+        <div id="particles-js"></div>
+        <div class="content" data-aos="fade-up">
+            <h1 class="glitch">VIRTUAL</h1>
+            <p>La experiencia definitiva de realidad mixta en el corazón de Malasaña. Sumérgete en mundos imposibles con la tecnología más avanzada a precios asequibles.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <button class="btn" onclick="document.getElementById('planes').scrollIntoView({behavior:'smooth'})">Ver Planes</button>
+                <a href="#reserva" class="btn btn-outline">Reservar Ahora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTADOR DE OFERTA (promoción de fin de semana) -->
+    <section style="padding: 2rem 5%; text-align: center;">
+        <h2 class="section-title">✨ Oferta especial fin de semana ✨</h2>
+        <div class="countdown" id="countdown"></div>
+        <p>Primera y última hora del día: 25% de descuento · Sesión de 30 min por solo 15€</p>
+    </section>
+
+    <!-- PLANES DE PRECIOS (actualizados con los precios de la memoria) -->
+    <section id="planes">
+        <h2 class="section-title" data-aos="fade-down">Elige tu inmersión</h2>
+        <p class="section-subtitle" data-aos="fade-down">Precios pensados para que todos puedan disfrutar de la realidad virtual.</p>
+        <div class="pricing-grid">
+            <div class="price-card" data-aos="flip-left" data-aos-delay="100">
+                <h3>EXPLORADOR</h3>
+                <div class="amount">20€ <span>/30 min</span></div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> 30 minutos de juego</li>
+                    <li><i class="fas fa-check"></i> Equipo Meta Quest</li>
+                    <li><i class="fas fa-check"></i> 1 juego a elegir</li>
+                    <li><i class="fas fa-check"></i> Protecciones faciales desechables</li>
+                    <li><i class="fas fa-check"></i> Bandas ajustables</li>
+                </ul>
+                <button class="btn" style="width:100%;" onclick="selectPlan('Explorador - 20€')">Elegir</button>
+            </div>
+            <div class="price-card featured" data-aos="flip-left" data-aos-delay="200">
+                <div class="badge">MÁS ELEGIDO</div>
+                <h3>VETERANO</h3>
+                <div class="amount">30€ <span>/hora</span></div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> 60 minutos de juego</li>
+                    <li><i class="fas fa-check"></i> Equipo premium + chaleco háptico</li>
+                    <li><i class="fas fa-check"></i> 3 juegos disponibles</li>
+                    <li><i class="fas fa-check"></i> Protecciones y bandas incluidas</li>
+                    <li><i class="fas fa-check"></i> 25% de descuento sobre 2 sesiones</li>
+                </ul>
+                <button class="btn" style="width:100%;" onclick="selectPlan('Veterano - 30€')">Elegir</button>
+            </div>
+            <div class="price-card" data-aos="flip-left" data-aos-delay="300">
+                <h3>FIN DE SEMANA</h3>
+                <div class="amount">15€ <span>/30 min</span></div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> 30 minutos en horario especial</li>
+                    <li><i class="fas fa-check"></i> Válido primer y último turno</li>
+                    <li><i class="fas fa-check"></i> Sábados, domingos y festivos</li>
+                    <li><i class="fas fa-check"></i> Equipo completo</li>
+                    <li><i class="fas fa-check"></i> 25% de descuento</li>
+                </ul>
+                <button class="btn" style="width:100%;" onclick="selectPlan('Fin de semana - 15€')">Elegir</button>
+            </div>
+            <div class="price-card" data-aos="flip-left" data-aos-delay="400">
+                <h3>GRUPAL</h3>
+                <div class="amount">120€ <span>/grupo (hasta 4)</span></div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> 60 minutos para el grupo</li>
+                    <li><i class="fas fa-check"></i> 4 equipos completos</li>
+                    <li><i class="fas fa-check"></i> Juegos multijugador</li>
+                    <li><i class="fas fa-check"></i> Chalecos hápticos incluidos</li>
+                    <li><i class="fas fa-check"></i> Grabación de la sesión</li>
+                </ul>
+                <button class="btn" style="width:100%;" onclick="selectPlan('Grupal - 120€')">Elegir</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE PROMOCIONES ESPECIALES (nueva) -->
+    <section id="promociones">
+        <h2 class="section-title" data-aos="fade-down">Promociones exclusivas</h2>
+        <p class="section-subtitle" data-aos="fade-down">Aprovecha nuestras ofertas pensadas para todos los públicos.</p>
+        <div class="promo-grid">
+            <div class="promo-card" data-aos="zoom-in">
+                <i class="fas fa-calendar-week"></i>
+                <h3>Entre semana</h3>
+                <p>Compra 2 sesiones de 30 min y paga solo 30€ (25% de descuento). Ideal para una hora completa de inmersión.</p>
+            </div>
+            <div class="promo-card" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fas fa-calendar-weekend"></i>
+                <h3>Fin de semana</h3>
+                <p>Primer y último turno del día a 15€ los 30 min. ¡Aprovecha las horas con menos afluencia!</p>
+            </div>
+            <div class="promo-card" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-gift"></i>
+                <h3>Cumpleaños</h3>
+                <p>El cumpleañero no paga si vienes con 3 amigos. Consulta condiciones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRAMA DE FIDELIZACIÓN (tarjeta de 29 puntos) -->
+    <section id="fidelizacion">
+        <h2 class="section-title" data-aos="fade-down">Programa de fidelización</h2>
+        <p class="section-subtitle" data-aos="fade-down">Acumula puntos y consigue recompensas exclusivas. Cada 30 minutos de sesión = 1 punto.</p>
+        <div class="loyalty-card" data-aos="flip-left">
+            <h3>Tu tarjeta de fidelización</h3>
+            <div class="loyalty-grid" id="loyaltyGrid">
+                <!-- Se genera con JavaScript -->
+            </div>
+            <div class="loyalty-rewards">
+                <span class="reward-badge"><i class="fas fa-gem"></i> 7 pts: 25% descuento</span>
+                <span class="reward-badge"><i class="fas fa-key"></i> 14 pts: Colgante + 25%</span>
+                <span class="reward-badge"><i class="fas fa-tag"></i> 21 pts: 25% en 2 sesiones</span>
+                <span class="reward-badge"><i class="fas fa-tshirt"></i> 29 pts: Camiseta + 25% en 2 sesiones</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARACTERÍSTICAS (productos tangibles e intangibles) -->
+    <section id="caracteristicas">
+        <h2 class="section-title" data-aos="fade-down">Lo que ofrecemos</h2>
+        <p class="section-subtitle" data-aos="fade-down">Equipamiento de última generación y sensaciones únicas.</p>
+        <div class="features-grid">
+            <div class="feature-item" data-aos="zoom-in" data-aos-delay="100">
+                <i class="fas fa-vr-cardboard"></i>
+                <h3>Tangible</h3>
+                <p>Gafas Meta Quest, chalecos hápticos, mandos ajustables para zurdos, protecciones faciales y bandas elásticas.</p>
+            </div>
+            <div class="feature-item" data-aos="zoom-in" data-aos-delay="200">
+                <i class="fas fa-brain"></i>
+                <h3>Intangible</h3>
+                <p>Adrenalina, vértigo, sensación de adicción positiva, satisfacción personal y experiencias que recordarás siempre.</p>
+            </div>
+            <div class="feature-item" data-aos="zoom-in" data-aos-delay="300">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>Beneficios</h3>
+                <p>Sacia tu deseo de ocio de manera temporal, comparte momentos con amigos y descubre nuevos mundos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="testimonios">
+        <h2 class="section-title" data-aos="fade-down">Lo que dicen nuestros viajeros</h2>
+        <p class="section-subtitle" data-aos="fade-down">Más de 500 sesiones nos avalan. Opiniones reales de clientes.</p>
+        <div class="testimonials-grid" id="testimonios-grid"></div>
+    </section>
+
+    <!-- GALERÍA -->
+    <section id="galeria">
+        <h2 class="section-title" data-aos="fade-down">Momentos inmersivos</h2>
+        <p class="section-subtitle" data-aos="fade-down">Así se vive la realidad virtual en Gracia's VR.</p>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=200&auto=format" alt="Persona con gafas VR" loading="lazy"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1622979135225-f2d7cf1c0e3b?q=80&w=200&auto=format" alt="Sala de VR" loading="lazy"></div>
+            <div class="gallery-item"><video autoplay loop muted playsinline><source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4"></video></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1617802690992-15d93263d3a9?q=80&w=200&auto=format" alt="Amigos en VR" loading="lazy"></div>
+        </div>
+    </section>
+
+    <!-- RESERVA + CALENDARIO -->
+    <section id="reserva">
+        <h2 class="section-title" data-aos="fade-down">Reserva tu slot</h2>
+        <p class="section-subtitle" data-aos="fade-down">Selecciona una fecha disponible y completa el formulario. Si tienes un código de descuento, introdúcelo.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div id="calendar" style="background: var(--card-bg); padding: 1rem; border-radius: 20px;"></div>
+            <div class="form-container" style="background: var(--card-bg); padding: 2rem; border-radius: 20px;">
+                <form id="reservationForm">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Nombre</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Teléfono</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type"><i class="fas fa-tag"></i> Plan</label>
+                        <select id="type" required>
+                            <option value="Explorador - 20€">Explorador (30 min) - 20€</option>
+                            <option value="Veterano - 30€">Veterano (60 min) - 30€</option>
+                            <option value="Fin de semana - 15€">Fin de semana (30 min) - 15€</option>
+                            <option value="Grupal - 120€">Grupal (hasta 4) - 120€</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar-alt"></i> Fecha</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <!-- Campo de código de descuento -->
+                    <div class="form-group">
+                        <label for="discountCode"><i class="fas fa-ticket-alt"></i> ¿Tienes un código de descuento?</label>
+                        <div class="discount-input-group">
+                            <input type="text" id="discountCode" placeholder="Ej: GRACIAS-ABCDEF">
+                            <button type="button" id="applyDiscountBtn">Aplicar</button>
+                        </div>
+                        <div id="discountMessage" class="discount-applied" style="display: none;"></div>
+                    </div>
+
+                    <!-- Mostrador de precios dinámico -->
+                    <div id="priceDisplay">
+                        <span class="original" id="originalPriceLabel">20€</span>
+                        <span class="final" id="finalPriceLabel">20€</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message"><i class="fas fa-comment"></i> Comentarios adicionales</label>
+                        <textarea id="message" rows="3" placeholder="Alergias, preferencias, etc."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fab fa-paypal"></i> Pago con PayPal.Me</label>
+                        <button type="button" class="btn" style="width:100%;" id="paypalMeButton">
+                            <i class="fab fa-paypal"></i> Pagar con PayPal.Me
+                        </button>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.5rem;">Serás redirigido a PayPal.Me para completar el pago.</p>
+                    </div>
+                    <button type="submit" class="btn" style="width:100%; margin-top:1rem;">Confirmar Reserva</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAPA (dirección real) -->
+    <section>
+        <h2 class="section-title">Cómo llegar</h2>
+        <p style="text-align:center; margin-bottom:1rem;">📍 Calle de Fuencarral 105, Madrid</p>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.2345678!2d-3.702!3d40.426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd42287b0b0b0b0b%3A0x123456789!2sCalle%20de%20Fuencarral%20105%2C%20Madrid!5e0!3m2!1ses!2ses!4v1234567890" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <h2 class="section-title">Preguntas frecuentes</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">¿Necesito experiencia previa? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">No, nuestros guías te explicarán todo antes de empezar. Además, los mandos se ajustan para zurdos y diestros.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Qué incluye el precio? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Equipo completo (gafas, mandos, chaleco háptico opcional), sesión de juego y asistencia personalizada. Las protecciones faciales son desechables.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Cómo funciona la tarjeta de fidelización? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Cada 30 minutos de juego acumulas 1 punto. Al llegar a ciertos hitos consigues descuentos y regalos exclusivos.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Puedo cancelar mi reserva? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Sí, hasta 24 horas antes sin coste.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (actualizado) -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>Gracia's VR</h4>
+                <p>La frontera digital en Malasaña. Desde 2025 llevando la realidad virtual más inmersiva a todos los públicos.</p>
+                <div class="socials">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Enlaces</h4>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#planes">Planes</a></li>
+                    <li><a href="#promociones">Promociones</a></li>
+                    <li><a href="#fidelizacion">Fidelización</a></li>
+                    <li><a href="#caracteristicas">Características</a></li>
+                    <li><a href="#testimonios">Testimonios</a></li>
+                    <li><a href="#galeria">Galería</a></li>
+                    <li><a href="#reserva">Reserva</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Calle de Fuencarral 105, Madrid</li>
+                    <li><i class="fas fa-envelope"></i> graciasvr@gmail.com</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Horario</h4>
+                <ul>
+                    <li>Lun-Vie: 10:00 - 22:00</li>
+                    <li>Sáb-Dom: 10:00 - 00:00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Gracia's VR Madrid. Diseñado con <i class="fas fa-heart" style="color: var(--neon-cyan);"></i> por Alejandro Guerra Abán, Brian Burgos Recuero e Israel Suárez García.
+        </div>
+    </footer>
+
+    <!-- CONTENEDOR DE TOASTS (NOTIFICACIONES MODERNAS) -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // ==================== INICIALIZACIÓN ====================
+        emailjs.init("Vwmc9kXqjL8oOk8G4"); // Clave pública (cámbiala si es necesario)
+
+        AOS.init({ duration: 1000, once: true });
+
+        particlesJS.load('particles-js', {
+            particles: {
+                number: { value: 60 },
+                color: { value: "#00f2ff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: { enable: true, speed: 2 }
+            }
+        });
+
+        // ==================== TOAST PERSONALIZADO ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // ==================== TEMA OSCURO/CLARO ====================
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // ==================== MODO SIN IMÁGENES ====================
+        document.getElementById('lightModeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-mode-images');
+        });
+
+        // ==================== CONTADOR DE OFERTA (fin de semana) ====================
+        function updateCountdown() {
+            // Simplemente mostramos un mensaje, pero podría ser un contador real
+            const hoy = new Date();
+            const dia = hoy.getDay(); // 0 domingo, 6 sábado
+            if (dia === 0 || dia === 6) {
+                document.getElementById('countdown').innerHTML = "¡Hoy es fin de semana! Aprovecha el 25% en primer y último turno.";
+            } else {
+                document.getElementById('countdown').innerHTML = "⏳ Prepárate para el fin de semana";
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // ==================== TESTIMONIOS DINÁMICOS ====================
+        const testimonios = [
+            { nombre: "Clara Gómez", img: "https://randomuser.me/api/portraits/women/44.jpg", texto: "Increíble experiencia. El chaleco háptico hace que sientas cada disparo. Repetiremos sin duda.", rating: 5 },
+            { nombre: "Carlos Ruiz", img: "https://randomuser.me/api/portraits/men/32.jpg", texto: "Fuimos un grupo de 4 y lo pasamos genial. El personal muy atento y los juegos variados.", rating: 5 },
+            { nombre: "Laura Méndez", img: "https://randomuser.me/api/portraits/women/68.jpg", texto: "La mejor sala de VR de Madrid. Instalaciones limpias y equipos de última generación.", rating: 5 },
+            { nombre: "Javier López", img: "https://randomuser.me/api/portraits/men/75.jpg", texto: "Mi hijo cumplió años aquí y fue un éxito. El cumpleañero no pagó.", rating: 5 }
+        ];
+        const grid = document.getElementById('testimonios-grid');
+        testimonios.forEach(t => {
+            grid.innerHTML += `
+                <div class="testimonial-card" data-aos="fade-up">
+                    <i class="fas fa-quote-left"></i>
+                    <p>"${t.texto}"</p>
+                    <div class="author">
+                        <img src="${t.img}" alt="${t.nombre}">
+                        <div>
+                            <h4>${t.nombre}</h4>
+                            <span>⭐ ${t.rating}/5</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // ==================== CALENDARIO ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                events: [
+                    { title: 'Disponible', start: '2026-03-10', color: 'green' },
+                    { title: 'Disponible', start: '2026-03-12', color: 'green' },
+                    { title: 'Reservado', start: '2026-03-15', color: 'red' }
+                ],
+                dateClick: function(info) {
+                    document.getElementById('date').value = info.dateStr;
+                }
+            });
+            calendar.render();
+        });
+
+        // ==================== SELECCIÓN DE PLAN DESDE TARJETAS ====================
+        function selectPlan(plan) {
+            const select = document.getElementById('type');
+            for (let opt of select.options) {
+                if (opt.value.includes(plan) || plan.includes(opt.value)) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+            document.getElementById('reserva').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== GESTIÓN DE CÓDIGOS DE DESCUENTO ====================
+        let discountCodes = JSON.parse(localStorage.getItem('discountCodes')) || [];
+
+        function saveDiscountCodes() {
+            localStorage.setItem('discountCodes', JSON.stringify(discountCodes));
+        }
+
+        function refreshDiscountCodes() {
+            discountCodes = JSON.parse(localStorage.getItem('discountCodes')) || [];
+        }
+
+        function generateDiscountCode(email) {
+            const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const code = 'GRACIAS-' + randomPart;
+            const newCode = {
+                codigo: code,
+                descuento: 10,            // 10% fijo
+                email: email,
+                generado: new Date().toISOString(),
+                expira: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 3 meses
+                usado: false,
+                activo: true
+            };
+            discountCodes.push(newCode);
+            saveDiscountCodes();
+            return code;
+        }
+
+        function validateDiscountCode(code) {
+            const entry = discountCodes.find(c => c.codigo === code);
+            if (!entry) return false;
+            if (!entry.activo) return false;
+            if (entry.usado) return false;
+            if (new Date(entry.expira) < new Date()) return false;
+            return entry; // devolvemos el objeto completo para obtener el %
+        }
+
+        function markCodeAsUsed(code) {
+            const entry = discountCodes.find(c => c.codigo === code);
+            if (entry) {
+                entry.usado = true;
+                saveDiscountCodes();
+            }
+        }
+
+        // ==================== ACTUALIZACIÓN DE PRECIOS EN TIEMPO REAL ====================
+        const typeSelect = document.getElementById('type');
+        const discountInput = document.getElementById('discountCode');
+        const applyBtn = document.getElementById('applyDiscountBtn');
+        const discountMsg = document.getElementById('discountMessage');
+        const originalSpan = document.getElementById('originalPriceLabel');
+        const finalSpan = document.getElementById('finalPriceLabel');
+
+        let currentDiscountApplied = false;
+        let currentDiscountCode = null;
+        let currentDiscountPercent = 0;
+
+        function getBasePrice() {
+            const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+            const text = selectedOption.textContent || selectedOption.innerText;
+            const match = text.match(/(\d+)\s*€/);
+            if (match) {
+                return parseInt(match[1], 10);
+            }
+            return 20; // fallback
+        }
+
+        function updatePriceDisplay() {
+            const base = getBasePrice();
+            let final = base;
+            if (currentDiscountApplied) {
+                final = Math.round(base * (100 - currentDiscountPercent) / 100);
+            }
+            originalSpan.textContent = base + '€';
+            finalSpan.textContent = final + '€';
+            if (currentDiscountApplied) {
+                originalSpan.style.textDecoration = 'line-through';
+            } else {
+                originalSpan.style.textDecoration = 'none';
+            }
+        }
+
+        typeSelect.addEventListener('change', updatePriceDisplay);
+        updatePriceDisplay(); // inicial
+
+        applyBtn.addEventListener('click', () => {
+            refreshDiscountCodes();
+            const code = discountInput.value.trim().toUpperCase();
+            if (!code) {
+                showToast('Introduce un código', 'error');
+                return;
+            }
+            const entry = validateDiscountCode(code);
+            if (entry) {
+                currentDiscountApplied = true;
+                currentDiscountCode = code;
+                currentDiscountPercent = entry.descuento;
+                discountMsg.style.display = 'flex';
+                discountMsg.innerHTML = `<i class="fas fa-check-circle"></i> Código válido: ${entry.descuento}% de descuento aplicado.`;
+                showToast(`Descuento del ${entry.descuento}% aplicado`, 'success');
+                updatePriceDisplay();
+            } else {
+                showToast('Código inválido o ya usado', 'error');
+                discountMsg.style.display = 'none';
+                currentDiscountApplied = false;
+                currentDiscountCode = null;
+                currentDiscountPercent = 0;
+                updatePriceDisplay();
+            }
+        });
+
+        // ==================== PAYPAL.ME con importe actualizado ====================
+        document.getElementById('paypalMeButton').addEventListener('click', () => {
+            let base = getBasePrice();
+            let final = currentDiscountApplied ? Math.round(base * (100 - currentDiscountPercent) / 100) : base;
+            const paypalUrl = `https://www.paypal.me/GraciasVRTienda/${final}EUR`; // Cambia "TuUsuario" por tu usuario real
+            window.open(paypalUrl, '_blank');
+            showToast(`Redirigiendo a PayPal (${final}€)`, 'success');
+        });
+
+        // ==================== ENVÍO DEL FORMULARIO CON EMAILJS Y GUARDADO LOCAL ====================
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const tipo = document.getElementById('type').value;
+            const fecha = document.getElementById('date').value;
+            const message = document.getElementById('message').value || '';
+
+            const orderId = 'VR-' + Date.now();
+
+            // Generar nuevo código de descuento para el cliente (futuras reservas)
+            const nuevoCodigo = generateDiscountCode(email);
+
+            // Guardar reserva en localStorage
+            let reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+            reservas.push({
+                from_name: name,
+                from_email: email,
+                phone: phone,
+                tipo: tipo,
+                fecha: fecha,
+                order_id: orderId,
+                message: message,
+                codigo_generado: nuevoCodigo
+            });
+            localStorage.setItem('reservas', JSON.stringify(reservas));
+
+            // Si se aplicó un descuento, marcar ese código como usado
+            if (currentDiscountApplied && currentDiscountCode) {
+                markCodeAsUsed(currentDiscountCode);
+            }
+
+            // Enviar email con EmailJS
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                to_email: email,
+                phone: phone,
+                tipo: tipo,
+                fecha: fecha,
+                order_id: orderId,
+                codigo_descuento: nuevoCodigo,
+                message: message
+            };
+
+            emailjs.send("service_5yvt4na", "template_a7951yv", templateParams)
+                .then(() => {
+                    showToast('¡Reserva confirmada! Revisa tu email y tu código de descuento.', 'success');
+                    this.reset();
+                    currentDiscountApplied = false;
+                    currentDiscountCode = null;
+                    currentDiscountPercent = 0;
+                    discountMsg.style.display = 'none';
+                    updatePriceDisplay();
+                    renderLoyaltyGrid(); // Actualizar la tarjeta de fidelización
+                })
+                .catch((error) => {
+                    console.error('EmailJS error:', error);
+                    showToast('Error al enviar el email, pero tu reserva quedó registrada.', 'error');
+                })
+                .finally(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                });
+        });
+
+        // ==================== ESCUCHA DE CAMBIOS EN LOCALSTORAGE (DESDE ADMIN) ====================
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'discountCodes') {
+                discountCodes = JSON.parse(e.newValue || '[]');
+                if (currentDiscountApplied && currentDiscountCode) {
+                    const entry = discountCodes.find(c => c.codigo === currentDiscountCode);
+                    if (!entry || !entry.activo || entry.usado || new Date(entry.expira) < new Date()) {
+                        showToast('El código de descuento aplicado ha sido desactivado o ha expirado.', 'error');
+                        currentDiscountApplied = false;
+                        currentDiscountCode = null;
+                        currentDiscountPercent = 0;
+                        discountMsg.style.display = 'none';
+                        updatePriceDisplay();
+                    }
+                }
+            }
+            if (e.key === 'reservas') {
+                renderLoyaltyGrid(); // Actualizar la tarjeta cuando cambien las reservas
+            }
+        });
+
+        // ==================== TARJETA DE FIDELIZACIÓN (29 puntos) ====================
+        function renderLoyaltyGrid() {
+            const reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+            // Calcular puntos totales del cliente actual (simplificado: todos los puntos se asignan al mismo cliente)
+            // En un caso real, se identificaría por email. Para demo, sumamos todas las reservas.
+            let totalPuntos = 0;
+            reservas.forEach(r => {
+                if (r.tipo && r.tipo.includes('Explorador')) totalPuntos += 1;
+                else if (r.tipo && r.tipo.includes('Veterano')) totalPuntos += 2; // 1h = 2 puntos
+                else if (r.tipo && r.tipo.includes('Fin de semana')) totalPuntos += 1;
+                else if (r.tipo && r.tipo.includes('Grupal')) totalPuntos += 2; // 1h = 2 puntos
+            });
+
+            const grid = document.getElementById('loyaltyGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 29; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'loyalty-cell' + (i < totalPuntos ? ' filled' : '');
+                cell.textContent = i + 1;
+                grid.appendChild(cell);
+            }
+        }
+
+        renderLoyaltyGrid();
+
+        // ==================== SCROLL SUAVE PARA ENLACES INTERNOS ====================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ==================== LIMPIAR URL DE PARÁMETROS ====================
+        (function() {
+            // Elimina cualquier query string o hash para una URL más limpia
+            if (window.location.search || window.location.hash) {
+                const nuevaUrl = window.location.pathname; // Mantiene la ruta actual
+                window.history.replaceState(null, '', nuevaUrl);
+                console.log('URL limpiada: ' + nuevaUrl);
+            }
+        })();
+    </script>
+</body>
+</html>
